@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ActivityIndicator,
   ScrollView,
@@ -11,24 +11,35 @@ import { Readability } from "@mozilla/readability";
 import { JSDOM } from "jsdom";
 import sanitizeHtml from "sanitize-html";
 
-class ReaderView extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.parseHtml = this.parseHtml.bind(this);
-    this.handleMouseUp = this.handleMouseUp.bind(this);
-    this.mounted = false;
-  }
+const ReaderView = ({ url }) => {
+  const [cleanHtml, setCleanHtml] = useState("");
+  const [title, setTitle] = useState("");
 
-  componentDidMount() {
-    this.mounted = true;
-    this.parseHtml();
-  }
+  useEffect(() => {
+    console.log("current article url:", url);
+    parseHtml();
+    console.log("clean html:", cleanHtml);
+    console.log(("title", title));
+  }, [url]);
 
-  async parseHtml() {
-    const { config, url, title, onError, errorPage } = this.props;
-    //TODO: update proxyUrl in deployment
+  const handleMouseUp = () => {
+    const selection = window.getSelection();
+    if (selection.toString()) {
+      const range = selection.getRangeAt(0);
+      const surroundEl = document.createElement("span");
+      const contents = range.extractContents();
+      // instead of using surround, we do this in order to allow the user to select
+      // more than just one text node
+      surroundEl.appendChild(contents);
+      surroundEl.style.backgroundColor = "#ffcc80";
+      range.insertNode(surroundEl);
+      // use selection.toString to extract the text iself.
+      console.log(selection.toString());
+    }
+  };
+
+  const parseHtml = async () => {
     const proxyUrl = "https://cors-anywhere.herokuapp.com/";
-
     try {
       const response = await fetch(proxyUrl + url);
       console.log("response", response);
@@ -37,91 +48,45 @@ class ReaderView extends PureComponent {
       const doc = new JSDOM(sanitized, { url: proxyUrl + url });
       let reader = new Readability(doc.window.document);
       let readabilityArticle = reader.parse();
-      this.setState({ title: readabilityArticle.title });
-      this.mounted &&
-        this.setState({
-          cleanHtmlSource: !readabilityArticle
-            ? errorPage || `<h1>Sorry, issue parsing ${url}</h1>`
-            : readabilityArticle.content,
-        });
+      setTitle(readabilityArticle.title);
+      setCleanHtml(readabilityArticle.content);
     } catch (e) {
       console.error(e);
       if (onError) {
         this.mounted && onError(e);
       }
     }
-  }
+  };
 
-  handleMouseUp() {
-    const selection = window.getSelection();
-    if (selection.toString()) {
-      const range = selection.getRangeAt(0);
-      const surroundEl = document.createElement("span");
-      const contents = range.extractContents();
-      // instead of using surround, we do this in order to allow the user to select
-      // more than just one text node
-      console.log(contents);
+  //TODO: turn title into a link to original content
+  return (
+    <View style={[styles.viewContainer]}>
+      {!cleanHtml ? (
+        <View
+          testID="reader-loader"
+          style={[styles.flex, styles.loadingContainer]}
+        ></View>
+      ) : (
+        <ScrollView
+          style={[styles.flexContent, { flex: 5 }]}
+          testID="reader-body"
+        >
+          {title ? (
+            <Text testID="reader-title" style={[styles.title]}>
+              {title}
+            </Text>
+          ) : null}
+          <HTMLView
+            value={cleanHtml}
+            rootComponentProps={{ onMouseUp: handleMouseUp }}
+          />
+        </ScrollView>
+      )}
 
-      surroundEl.appendChild(contents);
-      surroundEl.style.backgroundColor = "#ffcc80";
-      range.insertNode(surroundEl);
-      // use selection.toString to extract the text iself.
-      console.log(selection.toString());
-    }
-  }
-
-  render() {
-    const {
-      containerStyle,
-      loadingContainerStyle,
-      titleStyle,
-      indicatorProps,
-      renderLoader,
-      title,
-    } = this.props;
-    const cleanHtmlSource = this.state && this.state.cleanHtmlSource;
-
-    //TODO: turn title into a link to original content
-    return (
-      <View style={[styles.viewContainer, containerStyle]}>
-        {!cleanHtmlSource ? (
-          renderLoader ? (
-            renderLoader
-          ) : (
-            <View
-              testID="reader-loader"
-              style={[
-                styles.flex,
-                styles.loadingContainer,
-                loadingContainerStyle,
-              ]}
-            >
-              <ActivityIndicator {...indicatorProps} />
-            </View>
-          )
-        ) : (
-          <ScrollView
-            style={[styles.flexContent, { flex: 5 }]}
-            testID="reader-body"
-          >
-            {this.state.title ? (
-              <Text testID="reader-title" style={[styles.title, titleStyle]}>
-                {this.state.title}
-              </Text>
-            ) : null}
-            <HTMLView
-              value={cleanHtmlSource}
-              rootComponentProps={{ onMouseUp: this.handleMouseUp }}
-              {...this.props}
-            />
-          </ScrollView>
-        )}
-
-        <ScrollView style={{ flex: 1 }}></ScrollView>
-      </View>
-    );
-  }
-}
+      <ScrollView style={{ flex: 1 }}></ScrollView>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   title: {

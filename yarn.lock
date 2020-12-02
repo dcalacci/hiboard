@@ -1124,6 +1124,13 @@
   resolved "https://registry.yarnpkg.com/@mozilla/readability/-/readability-0.3.0.tgz#a473790e8b42ea39f9f03703fa1f17fec7984b60"
   integrity sha512-q8f1CAZsRKK1j+O0BmikGIlKSK03RpT4woT0PCQwhw0nH0z4+rG026AkxoPcjT7Dsgh1ifGscW8tOpvjoyOjvw==
 
+"@react-native-async-storage/async-storage@^1.13.2":
+  version "1.13.2"
+  resolved "https://registry.yarnpkg.com/@react-native-async-storage/async-storage/-/async-storage-1.13.2.tgz#649f78527f16cd5a87071a888219ef7a35ef5c79"
+  integrity sha512-isTDvUApRJPVWFxV15yrQSOGqarX7cIedq/y4N5yWSnotf68D9qvDEv1I7rCXhkBDi0u4OJt6GA9dksUT0D3wg==
+  dependencies:
+    deep-assign "^3.0.0"
+
 "@react-native-community/cli-debugger-ui@^4.13.1":
   version "4.13.1"
   resolved "https://registry.yarnpkg.com/@react-native-community/cli-debugger-ui/-/cli-debugger-ui-4.13.1.tgz#07de6d4dab80ec49231de1f1fbf658b4ad39b32c"
@@ -4663,6 +4670,13 @@ node-modules-regexp@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/node-modules-regexp/-/node-modules-regexp-1.0.0.tgz#8d9dbe28964a4ac5712e9131642107c71e90ec40"
   integrity sha1-jZ2+KJZKSsVxLpExZCEHxx6Q7EA=
+
+node-pinboard@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/node-pinboard/-/node-pinboard-2.0.1.tgz#7954daa2b1fcb7627dc3d4f368586ed76d90cc57"
+  integrity sha512-TvFjnLQRW/mEJmBDbBaL3APOxx1bCxCt1iw37YqgtLzWNUnu9zez2JTARd4qjcXp6uvJ8oaRhFNRJsLBhR7epQ==
+  dependencies:
+    node-fetch "^2.6.0"
 
 node-releases@^1.1.66:
   version "1.1.67"
