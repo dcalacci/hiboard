@@ -3,6 +3,7 @@ import {
   ScrollView,
   View,
   Text,
+  TextInput,
   StyleSheet,
   TouchableHighlight,
 } from "react-native";
@@ -23,6 +24,7 @@ const modalStyle = {
 
 const Modal = ({ handleClose, show, highlight, children }) => {
   const showHideStyle = show ? { display: "block" } : { display: "none" };
+  const [notes, setNotes] = useState("");
 
   if (highlight) {
     return (
@@ -62,7 +64,6 @@ const ReaderView = ({ url }) => {
   const getHighlightNotes = (highlightIndex) => {
     setModalInfo({ highlightIndex, showing: true });
   };
-
   const handleMouseUp = () => {
     const selection = window.getSelection();
     if (selection.toString()) {
@@ -138,6 +139,20 @@ const ReaderView = ({ url }) => {
             handleClose={() => setModalInfo({ ...modalInfo, showing: false })}
             highlight={highlights[modalInfo.highlightIndex]}
           >
+            <TextInput
+              style={styles.textInputStyle}
+              editable
+              onChangeText={(text) => {
+                const i = modalInfo.highlightIndex;
+                // some fancy spreading and destructuring to
+                // inject our notes
+                setHighlights([
+                  ...highlights.slice(0, i),
+                  { ...highlights[i], notes: text },
+                  ...highlights.slice(i + 1),
+                ]);
+              }}
+            ></TextInput>
             <p> Modal </p>
           </Modal>
         </>
@@ -166,6 +181,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 100,
     flexBasis: "60%",
+  },
+  textInputStyle: {
+    borderWidth: 3,
+    padding: 2,
+    margin: 5,
+    borderColor: "black",
   },
   container: {
     paddingHorizontal: 8,
