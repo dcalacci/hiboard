@@ -14,6 +14,8 @@ import sanitizeHtml from "sanitize-html";
 const ReaderView = ({ url }) => {
   const [cleanHtml, setCleanHtml] = useState("");
   const [title, setTitle] = useState("");
+  const [articleDetails, setArticleDetails] = useState({});
+  const [showGrotto, setGrottoShowing] = useState(false);
 
   useEffect(() => {
     console.log("current article url:", url);
@@ -48,6 +50,7 @@ const ReaderView = ({ url }) => {
       const doc = new JSDOM(html, { url: proxyUrl + url });
       let reader = new Readability(doc.window.document);
       let readabilityArticle = reader.parse();
+      setArticleDetails(readabilityArticle);
       setTitle(readabilityArticle.title);
       setCleanHtml(readabilityArticle.content);
     } catch (e) {
@@ -73,14 +76,18 @@ const ReaderView = ({ url }) => {
               {title}
             </Text>
           ) : null}
+          {articleDetails ? (
+            <Text style={[styles.author]}>{articleDetails.byline}</Text>
+          ) : null}
           <HTMLView
+            stylesheet={articleStyles}
             value={cleanHtml}
             rootComponentProps={{ onMouseUp: handleMouseUp }}
           />
         </ScrollView>
       )}
 
-      <ScrollView style={{ flex: 1 }}></ScrollView>
+      {showGrotto ? <ScrollView style={{ flex: 1 }}></ScrollView> : <></>}
     </View>
   );
 };
@@ -90,10 +97,16 @@ const styles = StyleSheet.create({
     fontSize: 36,
     fontWeight: "600",
   },
+  author: {
+    fontSize: 18,
+    fontWeight: "400",
+    textDecorationLine: "underline",
+  },
   viewContainer: {
     flex: 1,
     flexDirection: "row",
-    alignContent: "space-around",
+    alignContent: "center",
+    maxWidth: "850px",
     paddingHorizontal: 20,
     paddingVertical: 100,
     flexBasis: "60%",
@@ -110,10 +123,21 @@ const styles = StyleSheet.create({
   },
   flexContent: {
     flex: 6,
+    margin: 20,
   },
   flexGrotto: {
     flex: 4,
   },
 });
+
+const articleStyles = {
+  p: {
+    margin: 10,
+    fontSize: 24,
+    fontFamily: "Helvetica Neue",
+    fontWeight: "400",
+    lineHeight: "150%",
+  },
+};
 
 export default ReaderView;
