@@ -13,13 +13,20 @@ import { JSDOM } from "jsdom";
 
 const modalStyle = {
   position: "fixed",
-  top: 0,
+  top: "10%",
   left: "10%",
   width: "80%",
-  height: 300,
+  height: "20%",
+  padding: 10,
   backgroundColor: "#ffffff",
   borderWidth: "5px",
   borderColor: "black",
+};
+
+const modalInputStyle = {
+  fontSize: 24,
+  fontWeight: "600",
+  fontFamily: "HelveticaNeue",
 };
 
 const Modal = ({ handleClose, show, highlight, children }) => {
@@ -29,10 +36,9 @@ const Modal = ({ handleClose, show, highlight, children }) => {
   if (highlight) {
     return (
       <View style={[showHideStyle, modalStyle]}>
-        <Text>{highlight.text}</Text>
         {children}
         <TouchableHighlight onPress={handleClose}>
-          <Text>Close</Text>
+          <Text style={[modalInputStyle]}>Close</Text>
         </TouchableHighlight>
       </View>
     );
@@ -141,7 +147,16 @@ const ReaderView = ({ url }) => {
           >
             <TextInput
               style={styles.textInputStyle}
+              multiline
+              numberOfLines={4}
               editable
+              autoFocus={true}
+              onKeyPress={(e) => {
+                // enter automatically closes
+                if (e.key == "Enter") {
+                  setModalInfo({ ...modalInfo, showing: false });
+                }
+              }}
               onChangeText={(text) => {
                 const i = modalInfo.highlightIndex;
                 // some fancy spreading and destructuring to
@@ -153,7 +168,6 @@ const ReaderView = ({ url }) => {
                 ]);
               }}
             ></TextInput>
-            <p> Modal </p>
           </Modal>
         </>
       )}
@@ -184,9 +198,12 @@ const styles = StyleSheet.create({
   },
   textInputStyle: {
     borderWidth: 3,
+    width: "100%",
     padding: 2,
-    margin: 5,
     borderColor: "black",
+    fontSize: 24,
+    fontWeight: "600",
+    fontFamily: "HelveticaNeue",
   },
   container: {
     paddingHorizontal: 8,
