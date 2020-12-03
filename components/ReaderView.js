@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import HTMLView from "react-native-htmlview";
 import { Readability } from "@mozilla/readability";
-import { JSDOM } from "jsdom";
+import { JSDOM } from "JSDOM";
 
 const modalStyle = {
   position: "fixed",
@@ -31,7 +31,6 @@ const modalInputStyle = {
 
 const Modal = ({ handleClose, show, highlight, children }) => {
   const showHideStyle = show ? { display: "block" } : { display: "none" };
-  const [notes, setNotes] = useState("");
 
   if (highlight) {
     return (

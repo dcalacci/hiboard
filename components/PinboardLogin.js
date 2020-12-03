@@ -24,6 +24,8 @@ const apiTokenInput = (props) => {
   const getStoredToken = async () => {
     const storedToken = await AsyncStorage.getItem("@pinboardToken");
     const tokenTest = await testToken(storedToken);
+    console.log("token test:", tokenTest);
+    console.log("stored token:", storedToken);
     // if we have a stored token and it's good
     if (storedToken && tokenTest) {
       console.log("setting stored api token because it was fine");
@@ -55,6 +57,7 @@ const apiTokenInput = (props) => {
 
 const styles = StyleSheet.create({
   textInputStyle: {
+    width: "100%",
     borderWidth: 2,
     padding: 2,
     margin: 5,

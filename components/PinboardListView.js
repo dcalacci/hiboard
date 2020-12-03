@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     padding: 10,
     fontSize: 24,
-    borderBottomWidth: "2px",
+    borderBottomWidth: 2,
   },
   articleListStyle: {
     marginLeft: 50,
