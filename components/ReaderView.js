@@ -1,27 +1,19 @@
 import React, { useState, useEffect } from "react";
-import {
-  ActivityIndicator,
-  ScrollView,
-  View,
-  Text,
-  StyleSheet,
-} from "react-native";
+import { ScrollView, View, Text, StyleSheet } from "react-native";
 import HTMLView from "react-native-htmlview";
 import { Readability } from "@mozilla/readability";
 import { JSDOM } from "jsdom";
-import sanitizeHtml from "sanitize-html";
 
 const ReaderView = ({ url }) => {
   const [cleanHtml, setCleanHtml] = useState("");
   const [title, setTitle] = useState("");
   const [articleDetails, setArticleDetails] = useState({});
   const [showGrotto, setGrottoShowing] = useState(false);
+  const [highlights, setHighlights] = useState([]);
 
   useEffect(() => {
-    console.log("current article url:", url);
+    // parse HTML and turn into reader mode when URL changes
     parseHtml();
-    console.log("clean html:", cleanHtml);
-    console.log(("title", title));
   }, [url]);
 
   const handleMouseUp = () => {
@@ -36,7 +28,12 @@ const ReaderView = ({ url }) => {
       surroundEl.style.backgroundColor = "#ffcc80";
       range.insertNode(surroundEl);
       // use selection.toString to extract the text iself.
-      console.log(selection.toString());
+      const newHighlight = {
+        text: selection.toString(),
+        html: contents,
+        date: new Date(),
+      };
+      setHighlights([...highlights, newHighlight]);
     }
   };
 
