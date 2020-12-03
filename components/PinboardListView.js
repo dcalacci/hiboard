@@ -4,18 +4,29 @@ import { View, TouchableHighlight, Text, StyleSheet } from "react-native";
 const PinboardListView = ({ token, clickArticle }) => {
   const [articles, setArticles] = useState([]);
   useEffect(() => {
-    console.log("articles:", articles);
-    console.log("token", token);
     if (articles.length == 0) {
       getArticles();
     }
   });
 
   const ArticleList = () => {
+    const changeBackground = (e) => {
+      e.target.style.background = "#ffcc80";
+    };
+    const setDefaultBackground = (e) => {
+      e.target.style.background = "#ffffff";
+    };
+
     return articles.map((a, i) => (
       <View key={i}>
         <TouchableHighlight onPress={() => clickArticle(a.href)}>
-          <Text style={styles.articleItemStyle}>{a.description}</Text>
+          <Text
+            onMouseOver={changeBackground}
+            onMouseLeave={setDefaultBackground}
+            style={styles.articleItemStyle}
+          >
+            {a.description}
+          </Text>
         </TouchableHighlight>
       </View>
     ));
@@ -31,7 +42,7 @@ const PinboardListView = ({ token, clickArticle }) => {
   };
 
   return (
-    <View>
+    <View style={styles.articleListStyle}>
       <ArticleList />
     </View>
   );
@@ -44,6 +55,10 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 24,
     borderBottomWidth: "2px",
+  },
+  articleListStyle: {
+    marginLeft: 50,
+    marginRight: 50,
   },
 });
 export default PinboardListView;

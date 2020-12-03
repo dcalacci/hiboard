@@ -9,23 +9,41 @@ import PinboardListView from "./components/PinboardListView";
 export default function App() {
   const [apiToken, setApiToken] = useState("");
   const [currentArticleUrl, setCurrentArticleUrl] = useState("");
+  const [isReading, setIsReading] = useState(false);
 
-  return (
-    <View style={styles.container}>
-      {apiToken == "" ? <ApiTokenInput setToken={setApiToken} /> : <></>}
-      {apiToken != "" ? (
+  useEffect(() => {
+    if (currentArticleUrl != "") {
+      setIsReading(true);
+    }
+  });
+
+  const ListOrArticle = () => {
+    if (isReading) {
+      return (
+        <View style={styles.container}>
+          <ReaderView url={currentArticleUrl} />
+          <StatusBar style="light" />
+        </View>
+      );
+    } else {
+      return (
         <PinboardListView
           token={apiToken}
           clickArticle={(l) => {
-            console.log(`Clicked URL: ${l}`);
             setCurrentArticleUrl(l);
           }}
         />
+      );
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      {apiToken == "" ? (
+        <ApiTokenInput setToken={setApiToken} />
       ) : (
-        <></>
+        <ListOrArticle />
       )}
-      {currentArticleUrl == "" ? <></> : <ReaderView url={currentArticleUrl} />}
-      <StatusBar style="auto" />
     </View>
   );
 }

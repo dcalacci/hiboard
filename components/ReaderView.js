@@ -44,17 +44,14 @@ const ReaderView = ({ url }) => {
       const response = await fetch(proxyUrl + url);
       console.log("response", response);
       const html = await response.text();
-      const sanitized = sanitizeHtml(html);
-      const doc = new JSDOM(sanitized, { url: proxyUrl + url });
+      // const sanitized = sanitizeHtml(html);
+      const doc = new JSDOM(html, { url: proxyUrl + url });
       let reader = new Readability(doc.window.document);
       let readabilityArticle = reader.parse();
       setTitle(readabilityArticle.title);
       setCleanHtml(readabilityArticle.content);
     } catch (e) {
       console.error(e);
-      if (onError) {
-        this.mounted && onError(e);
-      }
     }
   };
 
