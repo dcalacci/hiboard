@@ -1,20 +1,67 @@
 import React, { useState, useEffect } from "react";
-import { ScrollView, View, Text, StyleSheet } from "react-native";
+import {
+  ScrollView,
+  View,
+  Text,
+  StyleSheet,
+  TouchableHighlight,
+} from "react-native";
 import HTMLView from "react-native-htmlview";
 import { Readability } from "@mozilla/readability";
 import { JSDOM } from "jsdom";
+
+const modalStyle = {
+  position: "fixed",
+  top: 0,
+  left: "10%",
+  width: "80%",
+  height: 300,
+  backgroundColor: "#ffffff",
+  borderWidth: "5px",
+  borderColor: "black",
+};
+
+const Modal = ({ handleClose, show, highlight, children }) => {
+  const showHideStyle = show ? { display: "block" } : { display: "none" };
+
+  if (highlight) {
+    return (
+      <View style={[showHideStyle, modalStyle]}>
+        <Text>{highlight.text}</Text>
+        {children}
+        <TouchableHighlight onPress={handleClose}>
+          <Text>Close</Text>
+        </TouchableHighlight>
+      </View>
+    );
+  } else {
+    return null;
+  }
+};
 
 const ReaderView = ({ url }) => {
   const [cleanHtml, setCleanHtml] = useState("");
   const [title, setTitle] = useState("");
   const [articleDetails, setArticleDetails] = useState({});
   const [showGrotto, setGrottoShowing] = useState(false);
+  const [modalInfo, setModalInfo] = useState({
+    showing: false,
+    highlightIndex: 0,
+  });
   const [highlights, setHighlights] = useState([]);
 
   useEffect(() => {
     // parse HTML and turn into reader mode when URL changes
     parseHtml();
   }, [url]);
+
+  useEffect(() => {
+    getHighlightNotes(highlights.length - 1);
+  }, [highlights]);
+
+  const getHighlightNotes = (highlightIndex) => {
+    setModalInfo({ highlightIndex, showing: true });
+  };
 
   const handleMouseUp = () => {
     const selection = window.getSelection();
@@ -32,8 +79,11 @@ const ReaderView = ({ url }) => {
         text: selection.toString(),
         html: contents,
         date: new Date(),
+        notes: "",
+        saved: false,
       };
       setHighlights([...highlights, newHighlight]);
+      // modal will get the highlight to select from index
     }
   };
 
@@ -64,24 +114,33 @@ const ReaderView = ({ url }) => {
           style={[styles.flex, styles.loadingContainer]}
         ></View>
       ) : (
-        <ScrollView
-          style={[styles.flexContent, { flex: 5 }]}
-          testID="reader-body"
-        >
-          {title ? (
-            <Text testID="reader-title" style={[styles.title]}>
-              {title}
-            </Text>
-          ) : null}
-          {articleDetails ? (
-            <Text style={[styles.author]}>{articleDetails.byline}</Text>
-          ) : null}
-          <HTMLView
-            stylesheet={articleStyles}
-            value={cleanHtml}
-            rootComponentProps={{ onMouseUp: handleMouseUp }}
-          />
-        </ScrollView>
+        <>
+          <ScrollView
+            style={[styles.flexContent, { flex: 5 }]}
+            testID="reader-body"
+          >
+            {title ? (
+              <Text testID="reader-title" style={[styles.title]}>
+                {title}
+              </Text>
+            ) : null}
+            {articleDetails ? (
+              <Text style={[styles.author]}>{articleDetails.byline}</Text>
+            ) : null}
+            <HTMLView
+              stylesheet={articleStyles}
+              value={cleanHtml}
+              rootComponentProps={{ onMouseUp: handleMouseUp }}
+            />
+          </ScrollView>
+          <Modal
+            show={modalInfo.showing}
+            handleClose={() => setModalInfo({ ...modalInfo, showing: false })}
+            highlight={highlights[modalInfo.highlightIndex]}
+          >
+            <p> Modal </p>
+          </Modal>
+        </>
       )}
 
       {showGrotto ? <ScrollView style={{ flex: 1 }}></ScrollView> : <></>}
