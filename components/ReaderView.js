@@ -26,20 +26,27 @@ const modalStyle = {
 
 const modalInputStyle = {
   fontSize: 24,
+  padding: 5,
   fontWeight: "600",
   fontFamily: "HelveticaNeue",
 };
 
-const Modal = ({ handleClose, show, highlight, children }) => {
+const Modal = ({ handleClose, handleCancel, show, highlight, children }) => {
   const showHideStyle = show ? { display: "block" } : { display: "none" };
 
   if (highlight) {
     return (
       <View style={[showHideStyle, modalStyle]}>
         {children}
-        <TouchableHighlight onPress={handleClose}>
-          <Text style={[modalInputStyle]}>Close</Text>
-        </TouchableHighlight>
+        <View style={[styles.modalMenuStyle]}>
+          <TouchableHighlight onPress={handleClose}>
+            <Text style={[modalInputStyle]}>Close</Text>
+          </TouchableHighlight>
+
+          <TouchableHighlight onPress={handleCancel}>
+            <Text style={[modalInputStyle]}>Cancel</Text>
+          </TouchableHighlight>
+        </View>
       </View>
     );
   } else {
@@ -75,6 +82,8 @@ const ReaderView = ({ url }) => {
     if (selection.toString()) {
       const range = selection.getRangeAt(0);
       const surroundEl = document.createElement("span");
+      const attrId = `${Date.now()}`;
+      surroundEl.setAttribute("id", attrId);
       const contents = range.extractContents();
       // instead of using surround, we do this in order to allow the user to select
       // more than just one text node
@@ -86,10 +95,11 @@ const ReaderView = ({ url }) => {
         text: selection.toString(),
         html: contents,
         date: new Date(),
+        spanId: attrId,
         notes: "",
         saved: false,
       };
-      setHighlights([...highlights, newHighlight]);
+      setHighlights([newHighlight, ...highlights]);
       // modal will get the highlight to select from index
     }
   };
@@ -110,6 +120,13 @@ const ReaderView = ({ url }) => {
     } catch (e) {
       console.error(e);
     }
+  };
+  const cancelHighlight = () => {
+    setModalInfo({ ...modalInfo, showing: false });
+    const spanEl = document.getElementById(highlights[0].spanId);
+    spanEl.style.backgroundColor = "#ffffff";
+
+    setHighlights(highlights.slice(1));
   };
 
   //TODO: turn title into a link to original content
@@ -140,6 +157,7 @@ const ReaderView = ({ url }) => {
           <Modal
             show={modalInfo.showing}
             handleClose={() => setModalInfo({ ...modalInfo, showing: false })}
+            handleCancel={() => cancelHighlight()}
             highlight={highlights[modalInfo.highlightIndex]}
           >
             <TextInput
@@ -183,6 +201,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "400",
     textDecorationLine: "underline",
+  },
+  modalMenuStyle: {
+    flex: 1,
+    flexDirection: "row",
+    alignContent: "space-between",
   },
   viewContainer: {
     flex: 1,
