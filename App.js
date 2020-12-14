@@ -5,7 +5,11 @@ import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
 import ReaderView from "./components/ReaderView";
 import ApiTokenInput from "./components/PinboardLogin";
 import PinboardListView from "./components/PinboardListView";
+import PdfView from "./components/PdfView";
+// import SimplePdfView from "./components/SimplePdfView";
 
+// const proxyUrl = "https://cors-anywhere.herokuapp.com/";
+const proxyUrl = "";
 export default function App() {
   const [apiToken, setApiToken] = useState("");
   const [currentArticleUrl, setCurrentArticleUrl] = useState("");
@@ -25,11 +29,16 @@ export default function App() {
   };
 
   const ListOrArticle = () => {
+    const isPdf = currentArticleUrl.indexOf(".pdf") > -1;
     if (currentArticleUrl !== "") {
       return (
         <View style={styles.container}>
           <BackToListButton />
-          <ReaderView url={currentArticleUrl} />
+          {isPdf ? (
+            <PdfView url={currentArticleUrl} />
+          ) : (
+            <ReaderView url={proxyUrl + currentArticleUrl} />
+          )}
           <BackToListButton />
           <StatusBar style="light" />
         </View>

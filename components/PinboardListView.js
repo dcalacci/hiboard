@@ -33,9 +33,10 @@ const PinboardListView = ({ token, clickArticle }) => {
   };
 
   const getArticles = async () => {
-    const proxyUrl = "https://cors-anywhere.herokuapp.com/";
+    // const proxyUrl = "https://cors-anywhere.herokuapp.com/";
+    // const apiUrl = `https://pinboard-api.now.sh/v1/posts/recent?auth_token=${token}&format=json`;
     const apiUrl = `https://api.pinboard.in/v1/posts/recent?auth_token=${token}&format=json`;
-    const response = await fetch(proxyUrl + apiUrl);
+    const response = await fetch(apiUrl);
     const json = await response.json();
     console.log("got json", json);
     setArticles(json.posts);

@@ -11,9 +11,8 @@ const apiTokenInput = (props) => {
 
   const testToken = async (testToken) => {
     try {
-      const proxyUrl = "https://cors-anywhere.herokuapp.com/";
       const apiUrl = `https://api.pinboard.in/v1/posts/recent?auth_token=${testToken}&format=json`;
-      const response = await fetch(proxyUrl + apiUrl);
+      const response = await fetch(apiUrl);
       return response.ok;
     } catch (err) {
       console.log("error:", err);

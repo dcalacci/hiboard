@@ -8,6 +8,7 @@ import {
   TouchableHighlight,
 } from "react-native";
 import HTMLView from "react-native-htmlview";
+import Spinner from "./Spinner";
 import { Readability } from "@mozilla/readability";
 import { JSDOM } from "JSDOM";
 
@@ -94,13 +95,13 @@ const ReaderView = ({ url }) => {
   };
 
   const parseHtml = async () => {
-    const proxyUrl = "https://cors-anywhere.herokuapp.com/";
+    console.log("parsing html...");
     try {
-      const response = await fetch(proxyUrl + url);
+      const response = await fetch(url);
       console.log("response", response);
       const html = await response.text();
       // const sanitized = sanitizeHtml(html);
-      const doc = new JSDOM(html, { url: proxyUrl + url });
+      const doc = new JSDOM(html, { url: url });
       let reader = new Readability(doc.window.document);
       let readabilityArticle = reader.parse();
       setArticleDetails(readabilityArticle);
@@ -115,10 +116,7 @@ const ReaderView = ({ url }) => {
   return (
     <View style={[styles.viewContainer]}>
       {!cleanHtml ? (
-        <View
-          testID="reader-loader"
-          style={[styles.flex, styles.loadingContainer]}
-        ></View>
+        <Spinner />
       ) : (
         <>
           <ScrollView
@@ -227,6 +225,7 @@ const articleStyles = {
   p: {
     margin: 10,
     fontSize: 24,
+    // fontFamily: "Verdana",
     fontFamily: "Helvetica Neue",
     fontWeight: "400",
     lineHeight: "150%",

@@ -16,12 +16,17 @@
     "jsdom": "^16.4.0",
     "jsdom-jscore-rn": "^0.1.8",
     "node-pinboard": "^2.0.1",
+    "pdfjs-dist": "^2.6.347",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.4.tar.gz",
     "react-native-htmlview": "^0.16.0",
     "react-native-web": "0.11",
-    "sanitize-html": "^2.1.2"
+    "react-pdf": "^5.0.0",
+    "react-pdf-highlighter": "^3.3.0",
+    "sanitize-html": "^2.1.2",
+    "webpack": "4.39.1",
+    "worker-loader": "2.0.0"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0"
