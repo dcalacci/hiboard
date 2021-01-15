@@ -12,7 +12,7 @@ tags, some just freeform notes, but I wanted to be able to choose.
 
 Hiboard has a minimal article list after pasting your pinboard API token into the landing page:
 
-![article list](./screenshots/list.png])
+![article list](./screenshots/list.png)
 
 Once you click on an article, you enter a nice reading mode:
 
