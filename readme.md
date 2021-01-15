@@ -8,6 +8,23 @@ I made this because I didn't have a good reader that supported **both** articles
 wanted a way to control where my highlights ended up, and what they looked like. Some tools allow
 tags, some just freeform notes, but I wanted to be able to choose.
 
+## To-Do:
+
+- support more kinds of annotations in PDFs
+- integrate a server into the app for usability and testing
+- allow editing notes once created
+- helpful keybinds while creating notes and reading
+- figure out why including and renderind pdfs is so fucking hard
+- send highlights and article info to Roam Research
+- figure out how to use pdf.js on mobile
+
+## Getting up and running
+
+```bash
+yarn install
+expo start --web
+```
+
 ## Screenshots and features
 
 Hiboard has a minimal article list after pasting your pinboard API token into the landing page:
@@ -25,14 +42,6 @@ When you make a highlight in an article, you're prompted to add notes. This is j
 You can also read and make highlights in PDFs you've saved to pinboard:
 
 ![pdfs](./screenshots/pdf.png)
-
-## To-Do:
-
-- support more kinds of annotations in PDFs
-- integrate a server into the app for usability and testing
-- allow editing notes once created
-- helpful keybinds while creating notes and reading
-- figure out why including and renderind pdfs is so fucking hard
 
 ## Dev Notes
 
