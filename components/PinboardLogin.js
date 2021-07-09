@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { TextInput, StyleSheet } from "react-native";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const apiTokenInput = (props) => {
   const [apiToken, setApiToken] = useState("");
   const setToken = async (token) => {
@@ -46,11 +47,15 @@ const apiTokenInput = (props) => {
   });
 
   return (
-    <TextInput
-      style={styles.textInputStyle}
-      editable
-      onChangeText={(text) => setApiToken(text)}
-    ></TextInput>
+    <div>
+      <p style={{ color: "black" }}>Enter a Pinboard API token:</p>
+      <TextInput
+        style={styles.textInputStyle}
+        editable
+        placeholder={"API token"}
+        onChangeText={(text) => setApiToken(text)}
+      ></TextInput>
+    </div>
   );
 };
 
